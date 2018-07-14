@@ -38,88 +38,34 @@ Output:
     (int list) [21, 15, 29] 
 """
 
-class BNode:
-  def __init__(self, level):
-    self.v = 0
-    self.left = None
-    self.right = None
-    self.parent = None
-    self.level = level
+def check_idx_value(idx, myself,parent ):
+  if idx == myself:
+    #print "Matched idx",idx,"value:",parent
+    return True
 
-def check_idx(node, rets):
-  if len(rets['idxs_asc']) > 0:
-    idx = rets['idxs_asc'][0]
+def search_by_math(level,parent,myself,type, max_level, idx):
+  if check_idx_value(idx,myself,parent):
+    return parent
+  distance = max_level - level
+  left_child_v = myself - pow(2,distance)
+  right_child_v = myself - 1
+  if idx <= left_child_v:
+    return search_by_math((level+1), myself, left_child_v, 'left', max_level, idx)
   else:
-      return
-  if node.v == idx:
-    #print "Matched: idx", idx, "node", node.v
-    if node.level == 0:
-      rets['ints'][ str(idx)] = -1
-      #print "keys when met root: ",rets['ints'].keys()
-    else:
-      if len(rets['idxs_asc']) > 0:
-        rets['idxs_asc'].pop(0)
-      #print "idxs_asc:",rets['idxs_asc']
-      rets['ints'][ str(idx)] = node.parent
-
-
-# build perfect binary tree and search idx
-def search(rets, node, last_v, max_level):
-  level = node.level  # AttributeError
-  #print "node",node, "level", level, "last_v", last_v, "max_level", max_level
-  if (max_level - level) > 1:
-    if node.right == None:
-      # right node not exist
-      right = BNode(level+1)
-      node.right = right
-      right.parent = node
-      if node.left == None:
-        left = BNode( level+1)
-        node.left = left
-        left.parent = node
-        search(rets, node.left,  last_v, max_level)
-      elif node.left.v > 0:
-        # left branch complete
-        search(rets, node.right, last_v, max_level)
-    elif node.right.v == 0:
-      # right node exist, not complete
-      search(rets, node.right, last_v, max_level )
-    elif node.right.v > 0:
-      # right branch complete
-      if node.v == 0:
-        node.v = node.right.v + 1
-        #print node.v
-        check_idx(node, rets)
-        # free useless branch
-        node.left = None
-        if level == 0:
-          node.right = None
-        else:
-          search(rets, node.parent, last_v + 1, max_level)
-  elif (max_level - level) == 1:
-    # bottom level
-    node.v = last_v + 1
-    #print node.v
-    check_idx(node, rets)
-    search(rets, node.parent, last_v + 1, max_level)
+    return search_by_math((level+1), myself, right_child_v, 'right', max_level, idx)
 
 def answer( h, q):
-  # level 0
-  root = BNode(0)
-
-  idxs_asc = sorted(q)
-  ints = {}
-  rets = { 'idxs': q, 'idxs_asc': idxs_asc,'ints':ints}
-  search(rets, root, 0, h)
-  x = []
+  ints = []
   for idx in q:
-    e = rets['ints'][str(idx)] #KeyError
-    if e == -1:
-      x.append( -1 )
-    else:
-      x.append( e.v)
-  return x
+    v = pow(2,h) -1 
+    ret = search_by_math(1,-1,v ,'root',h,idx)
+    #print "idx:",idx,"v", ret
+    ints.append( ret )
+  return ints
 
+print "(1,[1]):", answer(1,[1])
+print "(30,[1]):",answer(30,[1])
+print "(30,[1073741823]):",answer(30,[1073741823])
 print "(3,[1,4,7]):", answer(3, [1,4,7])
 print "(3,[7,3,5,1]):",answer(3, [7,3,5,1])
 print "(5,[19,14,28]):",answer(5, [19,14,28])

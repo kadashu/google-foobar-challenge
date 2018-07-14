@@ -55,18 +55,17 @@ def check_idx(node, rets):
     #print "Matched: idx", idx, "node", node.v
     if node.level == 0:
       rets['ints'][ str(idx)] = -1
+      #print "keys when met root: ",rets['ints'].keys()
     else:
       if len(rets['idxs_asc']) > 0:
         rets['idxs_asc'].pop(0)
-      print "idxs_asc:",rets['idxs_asc']
+      #print "idxs_asc:",rets['idxs_asc']
       rets['ints'][ str(idx)] = node.parent
 
-# level 0
-root = BNode(0)
 
 # build perfect binary tree and search idx
 def search(rets, node, last_v, max_level):
-  level = node.level
+  level = node.level  # AttributeError
   #print "node",node, "level", level, "last_v", last_v, "max_level", max_level
   if (max_level - level) > 1:
     if node.right == None:
@@ -105,22 +104,22 @@ def search(rets, node, last_v, max_level):
     search(rets, node.parent, last_v + 1, max_level)
 
 def answer( h, q):
+  # level 0
+  root = BNode(0)
+
   idxs_asc = sorted(q)
   ints = {}
   rets = { 'idxs': q, 'idxs_asc': idxs_asc,'ints':ints}
   search(rets, root, 0, h)
   x = []
   for idx in q:
-    try:
-      e = rets['ints'][str(idx)] #KeyError
-      if e == -1:
-        x.append( -1 )
-      else:
-        x.append( e.v)
-    except:
-      print "KeyError Exception! rets['ints']:",rets['ints']
+    e = rets['ints'][str(idx)] #KeyError
+    if e == -1:
+      x.append( -1 )
+    else:
+      x.append( e.v)
   return x
 
-#print "(3,[1,4,7]):", answer(3, [1,4,7])
+print "(3,[1,4,7]):", answer(3, [1,4,7])
 print "(3,[7,3,5,1]):",answer(3, [7,3,5,1])
 print "(5,[19,14,28]):",answer(5, [19,14,28])

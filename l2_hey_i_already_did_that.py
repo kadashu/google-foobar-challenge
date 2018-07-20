@@ -81,3 +81,5 @@ def answer(n, b):
 
 print '("1211",10):',answer( "1211", 10)
 print '("210022",3):',answer( "210022", 3)
+
+#TODO: 递归优化

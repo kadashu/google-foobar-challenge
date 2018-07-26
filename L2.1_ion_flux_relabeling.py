@@ -38,25 +38,20 @@ Output:
     (int list) [21, 15, 29] 
 """
 
-def check_idx_value(idx, myself,parent ):
+def search_by_math(level,parent,myself, max_level, idx):
   if idx == myself:
-    #print "Matched idx",idx,"value:",parent
-    return True
-
-def search_by_math(level,parent,myself,type, max_level, idx):
-  if check_idx_value(idx,myself,parent):
     return parent
   distance = max_level - level
   left_child_v = myself - pow(2,distance)
   right_child_v = myself - 1
   if idx <= left_child_v:
-    return search_by_math((level+1), myself, left_child_v, 'left', max_level, idx)
+    return search_by_math((level+1), myself, left_child_v, max_level, idx)
   else:
-    return search_by_math((level+1), myself, right_child_v, 'right', max_level, idx)
+    return search_by_math((level+1), myself, right_child_v, max_level, idx)
 
 def answer( h, q):
   v = pow(2,h) -1 
-  return [ search_by_math(1,-1,v,'root',h, x) for x in q ]
+  return [ search_by_math(1,-1,v,h, x) for x in q ]
 
 print "(1,[1]):", answer(1,[1])
 print "(30,[1]):",answer(30,[1])
